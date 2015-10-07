@@ -14,12 +14,12 @@ public class Frame {
 		isFinalFrame = false;
 		if (string.length() == 3){
 			isFinalFrame = true;
-			int[] ball = new int[3];
+			ball = new int[3];
 			assignBallValuesFinal(string);
 		}
 		else{
 			isFinalFrame = false;
-			int[] ball = new int[2];
+			ball = new int[2];
 			//assign next frame
 			nextFrame = myNextFrame;
 			assignBallValuesNormal(string);
@@ -50,16 +50,18 @@ public class Frame {
 	}
 	
 	private void assignBallValuesFinal(String string){
-		//assign ball values when final frame
-		for(int currentBall = 2; currentBall >= 0; currentBall--){
-			if(string.charAt(currentBall) == 'X'){
-				ball[currentBall] = 10;
+		for(int i = 0; i < 3; i++){
+			if(string.charAt(i) == 'X'){
+				ball[i] = 10;
 			}
-			else if(string.charAt(currentBall) == '/'){
-				ball[currentBall] = 10-ball[currentBall-1];
+			else if (string.charAt(i) == '-'){
+				ball[i] = 0;
+			}
+			else if (string.charAt(i) == '/'){
+				ball[i] = 10 - ball[i-1];
 			}
 			else{
-				ball[currentBall] = charToInt(string.charAt(currentBall));
+				ball[i] = charToInt(string.charAt(i));
 			}
 		}
 	}
@@ -73,6 +75,9 @@ public class Frame {
 	}
 	
 	public int getTwoBalls(){
+		if (isStrike){
+			return 10 + nextFrame.getOneBall();
+		}
 		return ball[0] + ball[1];
 	}
 	
@@ -80,6 +85,14 @@ public class Frame {
 		int sum = 0;
 		for(int i = 0; i < ball.length; i++){
 			sum += ball[i];
+		}
+		if(!isFinalFrame){
+			if(isStrike){
+				sum += nextFrame.getTwoBalls();
+			}
+			else if(isSpare){
+				sum += nextFrame.getOneBall();
+			}
 		}
 		return sum;
 	}
